@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: clinicalconnect-platform
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: clinicalconnect-postgres
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: HIPAA_AUDIT_ENABLED
+        value: "true"
+
+databases:
+  - name: clinicalconnect-postgres
+    databaseName: clinicalconnect
+    user: clinicalconnect_user
+    plan: free
+    region: oregon
